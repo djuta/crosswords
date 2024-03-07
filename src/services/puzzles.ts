@@ -29,7 +29,6 @@ export const getPuzzles = async (userId: string): Promise<PuzzleSummary[]> => (
   puzzlesRepository.getPuzzles(userId)
 );
 
-export const getPuzzle = async (userId: string, puzzleId: string): Promise<Puzzle> => {
-  const puzzle = await puzzlesRepository.getPuzzle(userId, puzzleId);
-  return puzzle;
-};
+export const getPuzzle = async (userId: string, puzzleId: string): Promise<Puzzle> => (
+  puzzlesRepository.getPuzzle(userId, puzzleId)
+);
