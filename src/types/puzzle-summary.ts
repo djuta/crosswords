@@ -1,8 +1,5 @@
 import Puzzle from './puzzle';
 
-type PuzzleSummary = Puzzle['meta'] & {
-  puzzleId: Puzzle['puzzleId']
-  status: Puzzle['status']
-}
+type PuzzleSummary = Pick<Puzzle, 'title' | 'author' | 'status' | 'puzzleId'>
 
 export default PuzzleSummary;

@@ -8,6 +8,7 @@ export const POST = withApiAuthRequired(async (request: NextRequest) => {
   const formData = await request.formData();
   const file: File | null = formData.get('file') as unknown as File;
   const puzFile = await file.arrayBuffer();
-  const puzzle = await uploadPuzzle(user?.userId, puzFile);
+  const puz = new Uint8Array(puzFile);
+  const puzzle = await uploadPuzzle(user?.userId, puz);
   return Response.json({ data: puzzle });
 });

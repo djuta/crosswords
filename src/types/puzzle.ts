@@ -1,17 +1,9 @@
-interface Puzzle {
+import { Puz } from '@dylanarmstrong/puz';
+
+interface Puzzle extends Omit<Puz, 'solution'> {
   puzzleId: string,
   status: number,
-  grid: string[][];
-  meta: {
-    title: string;
-    author: string;
-    copyright: string;
-    description: string;
-  };
-  clues: {
-    across: (string | null)[];
-    down: (string | null)[];
-  };
+  solution: string[][]
 }
 
 export default Puzzle;

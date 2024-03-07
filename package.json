@@ -10,9 +10,9 @@
   },
   "dependencies": {
     "@auth0/nextjs-auth0": "^3.5.0",
+    "@dylanarmstrong/puz": "^0.3.3",
     "mongodb": "^6.4.0",
     "next": "14.1.1",
-    "puzjs": "^1.0.2",
     "react": "^18",
     "react-dom": "^18"
   },

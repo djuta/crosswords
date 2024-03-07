@@ -1,33 +1,35 @@
-// @ts-expect-error old library, no type defs
-import puz from 'puzjs';
-import * as puzzleRepository from '@/repositories/puzzles';
+import * as puzzlesRepository from '@/repositories/puzzles';
+import parsePuz from '@dylanarmstrong/puz';
 import PuzzleSummary from '@/types/puzzle-summary';
 import Puzzle from '@/types/puzzle';
 
-export const uploadPuzzle = async (userId: string, puzFile: ArrayBuffer):
+export const uploadPuzzle = async (userId: string, puz: Uint8Array):
 Promise<PuzzleSummary> => {
-  const decodedPuzzle = puz.decode(puzFile);
-  const puzzleId = await puzzleRepository.insertPuzzle(userId, decodedPuzzle);
-  const puzzle = await puzzleRepository.getPuzzle(userId, puzzleId);
-  if (!puzzle) {
-    throw new Error('Error uploading puzzle');
-  }
-  const { status, meta } = puzzle;
-  return { puzzleId, status, ...meta };
+  const decodedPuzzle = parsePuz(puz);
+
+  let solutionIndex = 0;
+  const solution: string[][] = [];
+  decodedPuzzle?.grid?.forEach((row, rowIndex) => {
+    solution[rowIndex] = [];
+    row.forEach((cell, cellIndex) => {
+      solution[rowIndex][cellIndex] = String.fromCharCode(
+        decodedPuzzle.solution?.[solutionIndex] as number,
+      );
+      solutionIndex += 1;
+    });
+  });
+
+  const newPuzzle = { ...decodedPuzzle, solution, status: 0 };
+
+  const puzzleId = await puzzlesRepository.insertPuzzle(userId, newPuzzle);
+  return puzzlesRepository.getPuzzleSummary(userId, puzzleId);
 };
 
-export const getPuzzles = async (userId: string): Promise<PuzzleSummary[]> => {
-  const puzzles = await puzzleRepository.getPuzzles(userId);
-  if (!puzzles) {
-    throw new Error('Error getting puzzles');
-  }
-  return puzzles.map(({ puzzleId, status, meta }) => ({ puzzleId, status, ...meta }));
-};
+export const getPuzzles = async (userId: string): Promise<PuzzleSummary[]> => (
+  puzzlesRepository.getPuzzles(userId)
+);
 
 export const getPuzzle = async (userId: string, puzzleId: string): Promise<Puzzle> => {
-  const puzzle = await puzzleRepository.getPuzzle(userId, puzzleId);
-  if (!puzzle) {
-    throw new Error('error getting puzzle');
-  }
+  const puzzle = await puzzlesRepository.getPuzzle(userId, puzzleId);
   return puzzle;
 };
