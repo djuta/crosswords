@@ -1,22 +1,23 @@
-import Puzzle from '@/types/puzzle';
+import { ClueTuple } from '@/types/clue';
 
-type PuzzleCluesProps = Pick<Required<Puzzle>, 'clues'>
+type PuzzleCluesProps = {
+  clues: ClueTuple[];
+  direction: string;
+  selectedNumber: number;
+}
 
-export default function PuzzleClues({ clues }: PuzzleCluesProps) {
+export default function PuzzleClues({ clues, direction, selectedNumber }: PuzzleCluesProps) {
   return (
-    <div className="flex">
-      {/* Render across and down clues */}
-      <div className="mb-4">
-        <h3 className="text-lg font-semibold">Clues</h3>
-        {clues.map((clue, index) => (
-          // eslint-disable-next-line react/no-array-index-key
-          <div key={index} className="ml-2">
-            {index + 1}
-            .
-            {clue}
-          </div>
-        ))}
-      </div>
+    <div className="mb-4">
+      <h3 className="text-lg font-semibold">{direction}</h3>
+      {clues.map(([clueNumber, clueText]) => (
+        <div key={clueNumber} className={`ml-2 ${clueNumber === selectedNumber ? 'bg-blue-100' : 'bg-white'}`}>
+          {clueNumber}
+          .
+          {' '}
+          {clueText}
+        </div>
+      ))}
     </div>
   );
 }

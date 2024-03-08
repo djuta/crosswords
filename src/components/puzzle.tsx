@@ -1,7 +1,9 @@
 'use client';
 
+import React from 'react';
 import Puzzle from '@/types/puzzle';
-import React, { useState } from 'react';
+import useClues from '@/hooks/use-clues';
+import useSolution from '@/hooks/use-solution';
 import PuzzleGrid from './puzzle-grid';
 import PuzzleClues from './puzzle-clues';
 
@@ -10,25 +12,19 @@ interface CrosswordPuzzleProps {
 }
 
 export default function CrosswordPuzzle({ puzzle }: CrosswordPuzzleProps) {
-  const [shouldShowSolution, setShouldShowSolution] = useState(false);
-  const [userSolution, setUserSolution] = useState(
-    puzzle.solution.map((row) => row.map(() => '')),
-  );
+  const {
+    clues,
+    setCurrentCell,
+    selectedAcrossNumber,
+    selectedDownNumber,
+  } = useClues({ grid: puzzle.grid });
 
-  const toggleShowSolution = () => {
-    if (!shouldShowSolution) {
-      window.confirm('Are you sure you want to see the solution');
-    }
-    setShouldShowSolution((value) => !value);
-  };
-
-  const setUserSolutionCell = (row: number, col: number, char: string) => {
-    setUserSolution((oldSolution) => {
-      const newSolution = [...oldSolution];
-      newSolution[row][col] = char;
-      return newSolution;
-    });
-  };
+  const {
+    userSolution,
+    setUserSolutionCell,
+    shouldShowSolution,
+    toggleShowSolution,
+  } = useSolution(puzzle.solution);
 
   return (
     <div className="container">
@@ -42,14 +38,16 @@ export default function CrosswordPuzzle({ puzzle }: CrosswordPuzzleProps) {
               shouldShowSolution={shouldShowSolution}
               userSolution={userSolution}
               onInputChange={setUserSolutionCell}
+              onCellSelected={setCurrentCell}
             />
           )}
           <button type="button" onClick={toggleShowSolution}>
             {shouldShowSolution ? 'Hide Solution' : 'Show Solution'}
           </button>
         </div>
-        <div className="flex-1">
-          {puzzle.clues && <PuzzleClues clues={puzzle.clues} />}
+        <div className="flex-1 flex">
+          {clues?.across && <PuzzleClues clues={clues.across} direction="Across" selectedNumber={selectedAcrossNumber} />}
+          {clues?.down && <PuzzleClues clues={clues.down} direction="Down" selectedNumber={selectedDownNumber} />}
         </div>
       </div>
     </div>

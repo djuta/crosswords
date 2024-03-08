@@ -9,7 +9,13 @@ Promise<PuzzleSummary> => {
 
   let solutionIndex = 0;
   const solution: string[][] = [];
-  decodedPuzzle?.grid?.forEach((row, rowIndex) => {
+  const grid = decodedPuzzle?.grid;
+
+  if (!grid) {
+    throw new Error('no grid');
+  }
+
+  grid.forEach((row, rowIndex) => {
     solution[rowIndex] = [];
     row.forEach((cell, cellIndex) => {
       solution[rowIndex][cellIndex] = String.fromCharCode(
@@ -19,7 +25,9 @@ Promise<PuzzleSummary> => {
     });
   });
 
-  const newPuzzle = { ...decodedPuzzle, solution, status: 0 };
+  const newPuzzle = {
+    ...decodedPuzzle, solution, status: 0, grid,
+  };
 
   const puzzleId = await puzzlesRepository.insertPuzzle(userId, newPuzzle);
   return puzzlesRepository.getPuzzleSummary(userId, puzzleId);
