@@ -1,4 +1,6 @@
-import { Puz } from '@dylanarmstrong/puz';
+import { Puz } from 'puz-parser';
+
+export * from 'puz-parser';
 
 interface Puzzle extends Omit<Puz, 'solution' | 'grid'> {
   puzzleId: string,

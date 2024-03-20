@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@auth0/nextjs-auth0": "^3.5.0",
-    "@dylanarmstrong/puz": "^0.3.3",
+    "puz-parser": "^0.3.5",
     "mongodb": "^6.4.0",
     "next": "14.1.1",
     "react": "^18",

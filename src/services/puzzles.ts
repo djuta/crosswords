@@ -1,21 +1,21 @@
 import * as puzzlesRepository from '@/repositories/puzzles';
-import parsePuz from '@dylanarmstrong/puz';
+import parsePuz from 'puz-parser';
 import PuzzleSummary from '@/types/puzzle-summary';
 import Puzzle from '@/types/puzzle';
 
-export const uploadPuzzle = async (userId: string, puz: Uint8Array):
-Promise<PuzzleSummary> => {
+export const uploadPuzzle = async (userId: string, puz: Uint8Array): Promise<PuzzleSummary> => {
   const decodedPuzzle = parsePuz(puz);
 
   let solutionIndex = 0;
   const solution: string[][] = [];
-  const grid = decodedPuzzle?.grid;
 
-  if (!grid) {
+  if (!decodedPuzzle?.grid) {
     throw new Error('no grid');
   }
 
-  grid.forEach((row, rowIndex) => {
+  const { grid } = decodedPuzzle;
+
+  decodedPuzzle.grid.forEach((row, rowIndex) => {
     solution[rowIndex] = [];
     row.forEach((cell, cellIndex) => {
       solution[rowIndex][cellIndex] = String.fromCharCode(

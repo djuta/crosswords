@@ -15,8 +15,10 @@ export default function CrosswordPuzzle({ puzzle }: CrosswordPuzzleProps) {
   const {
     clues,
     setCurrentCell,
-    selectedAcrossNumber,
-    selectedDownNumber,
+    currentCell,
+    selectedCells,
+    toggleDirection,
+    isAcross,
   } = useClues({ grid: puzzle.grid });
 
   const {
@@ -38,7 +40,10 @@ export default function CrosswordPuzzle({ puzzle }: CrosswordPuzzleProps) {
               shouldShowSolution={shouldShowSolution}
               userSolution={userSolution}
               onInputChange={setUserSolutionCell}
+              selectedCells={selectedCells}
               onCellSelected={setCurrentCell}
+              toggleDirection={toggleDirection}
+              isAcross={isAcross}
             />
           )}
           <button type="button" onClick={toggleShowSolution}>
@@ -46,8 +51,8 @@ export default function CrosswordPuzzle({ puzzle }: CrosswordPuzzleProps) {
           </button>
         </div>
         <div className="flex-1 flex">
-          {clues?.across && <PuzzleClues clues={clues.across} direction="Across" selectedNumber={selectedAcrossNumber} />}
-          {clues?.down && <PuzzleClues clues={clues.down} direction="Down" selectedNumber={selectedDownNumber} />}
+          <PuzzleClues clues={clues.across} direction="Across" selected={currentCell?.across} />
+          <PuzzleClues clues={clues.down} direction="Down" selected={currentCell?.down} />
         </div>
       </div>
     </div>
