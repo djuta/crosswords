@@ -3,22 +3,26 @@ import { CellDirection } from '@/types/puzzle';
 
 type PuzzleCluesProps = {
   clues: ClueTuple[];
-  direction: string;
   selected: CellDirection | undefined;
+  // eslint-disable-next-line no-unused-vars
+  onClueSelected: (clueNumber: number) => void
 }
 
-export default function PuzzleClues({ clues, direction, selected }: PuzzleCluesProps) {
+export default function PuzzleClues({ clues, selected, onClueSelected }: PuzzleCluesProps) {
   return (
-    <div className="mb-4">
-      <h3 className="text-lg font-semibold">{direction}</h3>
+    <ol className="overflow-scroll bg-white py-3">
       {clues.map(([clueNumber, clueText]) => (
-        <div key={clueNumber} className={`ml-2 ${clueNumber === selected?.clueIndex ? 'bg-blue-100' : 'bg-white'}`}>
-          {clueNumber}
-          .
-          {' '}
-          {clueText}
-        </div>
+        <li key={clueNumber} className={`${clueNumber === selected?.clueIndex ? 'bg-blue-100' : 'bg-white'}`}>
+          <button type="button" className="flex text-left text-sm py-1 px-3" onClick={() => onClueSelected(clueNumber)}>
+            <div className="mr-3 font-bold w-5">
+              {clueNumber}
+            </div>
+            <div className="flex-2">
+              {clueText}
+            </div>
+          </button>
+        </li>
       ))}
-    </div>
+    </ol>
   );
 }

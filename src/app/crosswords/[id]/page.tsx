@@ -15,7 +15,7 @@ const Crossword = async ({ params }: CrosswordParams) => {
   const user = await getUser();
   const puzzle = await getPuzzle(user?.userId, params?.id);
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+    <main className="flex max-w-screen max-h-screen h-screen flex-col items-center justify-between p-10">
       <CrosswordPuzzle puzzle={puzzle} />
     </main>
   );

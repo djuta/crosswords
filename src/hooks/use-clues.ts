@@ -21,6 +21,20 @@ export default function useClues({ grid }: { grid: Puzzle['grid'] }) {
   const clues = useMemo(() => getCluesFromGrid(grid), [grid]);
   const toggleDirection = () => setIsAcross((value) => !value);
 
+  const createClueSelectHandler = (direction: 'across' | 'down') => (
+    clueNumber: number,
+  ) => {
+    // eslint-disable-next-line no-restricted-syntax
+    for (const row of grid) {
+      const cell = row.find((c) => c[direction].clueIndex === clueNumber);
+      if (cell) {
+        setCurrentCell(cell);
+        setIsAcross(direction === 'across');
+        break;
+      }
+    }
+  };
+
   useEffect(() => {
     if (!currentCell) {
       return;
@@ -36,5 +50,6 @@ export default function useClues({ grid }: { grid: Puzzle['grid'] }) {
     setCurrentCell,
     clues,
     toggleDirection,
+    createClueSelectHandler,
   };
 }

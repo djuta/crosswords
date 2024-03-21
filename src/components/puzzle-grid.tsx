@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import Puzzle, { Cell } from '@/types/puzzle';
 
 type PuzzleGridProps = Pick<Required<Puzzle>, 'grid' | 'solution'> & {
@@ -37,16 +37,27 @@ export default function PuzzleGrid({
     }
   };
 
-  const isSelectedClueCell = useCallback((rowIndex: number, colIndex: number) => {
+  const isSelectedClueCell = (rowIndex: number, colIndex: number) => {
     const cellNumber = (width * (rowIndex + 1)) - (width - colIndex);
     return selectedCells?.includes(cellNumber);
-  }, [selectedCells, width]);
+  };
 
   const getTabIndex = (rowIndex: number, colIndex: number) => {
     const x = isAcross ? rowIndex : colIndex;
     const y = isAcross ? colIndex : rowIndex;
     return (width * (x + 1)) - (width - (y + 1));
   };
+
+  // TODO: handle black cells by creating an array of avaialable indicies
+  // TODO: handle back/delete
+  // const handleOnKeyUp = (rowIndex: number, colIndex: number) => {
+  //   const tabIndex = getTabIndex(rowIndex, colIndex);
+  //   const nextTabIndex = tabIndex + 1;
+  //   const nextInput = document.querySelector(`[tabindex="${nextTabIndex}"]`) as HTMLInputElement;
+  //   if (nextInput) {
+  //     nextInput.focus();
+  //   }
+  // };
 
   const solutionValue = shouldShowSolution ? solution : userSolution;
   return (
@@ -56,21 +67,22 @@ export default function PuzzleGrid({
         <div key={rowIndex} className="flex">
           {row.map((cell, colIndex) => (
             // eslint-disable-next-line react/no-array-index-key
-            <div key={colIndex} className={`w-11 h-11 border relative border-gray-300 ${cell.isBlack ? 'bg-black' : ''}`}>
+            <div key={colIndex} className={`w-8 h-8 border relative border-gray-300 ${cell.isBlack ? 'bg-black' : ''}`}>
               {cell.isBlack ? '' : (
                 <input
-                  className={`w-full h-full text-center caret-transparent ${isSelectedClueCell(rowIndex, colIndex) ? 'bg-blue-100' : ''}`}
+                  className={`w-full h-full text-center caret-transparent pt-2 ${isSelectedClueCell(rowIndex, colIndex) ? 'bg-blue-100' : ''}`}
                   type="text"
                   maxLength={1}
                   value={solutionValue[rowIndex][colIndex]}
                   onChange={(e) => handleInputChange(e, rowIndex, colIndex)}
                   onMouseDown={handleInputOnClick}
                   onFocus={() => onCellSelected(cell)}
+                  // onKeyUp={() => handleOnKeyUp(rowIndex, colIndex)}
                   tabIndex={getTabIndex(rowIndex, colIndex)}
                 />
               )}
               {cell.isStart && (
-                <div className="absolute top-0 left-0 text-xs font-semibold transform">
+                <div className="absolute top-0 left-0 text-[11px] font-semibold transform">
                   {cell.clueIndex}
                 </div>
               )}
