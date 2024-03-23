@@ -1,6 +1,7 @@
 import React from 'react';
 import Puzzle, { Cell } from '@/types/puzzle';
 import { Reveal } from '@/types/reveal';
+import TwoWayMap from '@/utils/two-way-map';
 
 type PuzzleGridProps = Pick<Required<Puzzle>, 'grid' | 'solution'> & {
   solutionReveal: Reveal,
@@ -13,6 +14,8 @@ type PuzzleGridProps = Pick<Required<Puzzle>, 'grid' | 'solution'> & {
   toggleDirection: () => void
   isAcross: boolean,
 }
+
+const REMOVE_CHAR_KEYS = ['Backspace', 'Delete'];
 
 export default function PuzzleGrid({
   grid,
@@ -27,9 +30,12 @@ export default function PuzzleGrid({
 }: PuzzleGridProps) {
   const width = grid[0].length;
 
+  const tabIndexElements = new TwoWayMap<number, HTMLInputElement | null>();
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, row: number, col: number) => {
-    // Update puzzle grid value
-    onInputChange(row, col, e.target.value.toUpperCase());
+    const { value } = e.target;
+    const lastLetter = value.charAt(value.length - 1);
+    onInputChange(row, col, lastLetter.toUpperCase());
   };
 
   const handleInputOnClick = (e: React.MouseEvent<HTMLInputElement, MouseEvent>) => {
@@ -49,16 +55,21 @@ export default function PuzzleGrid({
     return (width * (x + 1)) - (width - (y + 1));
   };
 
-  // TODO: handle black cells by creating an array of avaialable indicies
-  // TODO: handle back/delete
-  // const handleOnKeyUp = (rowIndex: number, colIndex: number) => {
-  //   const tabIndex = getTabIndex(rowIndex, colIndex);
-  //   const nextTabIndex = tabIndex + 1;
-  //   const nextInput = document.querySelector(`[tabindex="${nextTabIndex}"]`) as HTMLInputElement;
-  //   if (nextInput) {
-  //     nextInput.focus();
-  //   }
-  // };
+  const handleOnKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const index = tabIndexElements.getKey(e.target as HTMLInputElement);
+
+    if (!index) {
+      return;
+    }
+
+    const nextInput = REMOVE_CHAR_KEYS.includes(e.key)
+      ? tabIndexElements.getPrev(index)
+      : tabIndexElements.getNext(index);
+
+    if (nextInput) {
+      nextInput.focus();
+    }
+  };
 
   const getSolutionValue = (rowIndex: number, colIndex: number) => {
     const isSelectedCell = isSelectedClueCell(rowIndex, colIndex);
@@ -105,12 +116,12 @@ export default function PuzzleGrid({
                 <input
                   className={`w-full h-full text-center caret-transparent pt-2 ${isSelectedClueCell(rowIndex, colIndex) ? 'bg-blue-100' : ''}`}
                   type="text"
-                  maxLength={1}
+                  ref={(el) => tabIndexElements.set(getTabIndex(rowIndex, colIndex), el)}
                   value={getSolutionValue(rowIndex, colIndex)}
                   onChange={(e) => handleInputChange(e, rowIndex, colIndex)}
                   onMouseDown={handleInputOnClick}
                   onFocus={() => onCellSelected(cell)}
-                  // onKeyUp={() => handleOnKeyUp(rowIndex, colIndex)}
+                  onKeyUp={(e) => handleOnKeyUp(e)}
                   tabIndex={getTabIndex(rowIndex, colIndex)}
                 />
               )}
