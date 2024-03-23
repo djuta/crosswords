@@ -1,8 +1,9 @@
 import React from 'react';
 import Puzzle, { Cell } from '@/types/puzzle';
+import { Reveal } from '@/types/reveal';
 
 type PuzzleGridProps = Pick<Required<Puzzle>, 'grid' | 'solution'> & {
-  shouldShowSolution: boolean
+  solutionReveal: Reveal,
   userSolution: string[][]
   // eslint-disable-next-line no-unused-vars
   onInputChange: (row: number, col: number, char: string) => void
@@ -17,7 +18,7 @@ export default function PuzzleGrid({
   grid,
   solution,
   userSolution,
-  shouldShowSolution,
+  solutionReveal,
   onInputChange,
   onCellSelected,
   selectedCells,
@@ -39,7 +40,7 @@ export default function PuzzleGrid({
 
   const isSelectedClueCell = (rowIndex: number, colIndex: number) => {
     const cellNumber = (width * (rowIndex + 1)) - (width - colIndex);
-    return selectedCells?.includes(cellNumber);
+    return !!selectedCells?.includes(cellNumber);
   };
 
   const getTabIndex = (rowIndex: number, colIndex: number) => {
@@ -59,7 +60,40 @@ export default function PuzzleGrid({
   //   }
   // };
 
-  const solutionValue = shouldShowSolution ? solution : userSolution;
+  const getSolutionValue = (rowIndex: number, colIndex: number) => {
+    const isSelectedCell = isSelectedClueCell(rowIndex, colIndex);
+    const userSolutionLetter = userSolution[rowIndex][colIndex];
+    const solutionLetter = solution[rowIndex][colIndex];
+    switch (solutionReveal) {
+      case Reveal.PuzzleSolution:
+        return solutionLetter;
+      case Reveal.WordSolution:
+        return isSelectedCell ? solutionLetter : userSolutionLetter;
+      default:
+        return userSolutionLetter;
+    }
+  };
+
+  const getBorder = (rowIndex: number, colIndex: number) => {
+    const isSelectedCell = isSelectedClueCell(rowIndex, colIndex);
+    const userSolutionLetter = userSolution[rowIndex][colIndex];
+    const solutionLetter = solution[rowIndex][colIndex];
+    const isCorrectLetter = !userSolutionLetter || userSolutionLetter === solutionLetter;
+
+    const isCorrectLetterForCheckPuzzle = (
+      solutionReveal === Reveal.CheckPuzzle ? isCorrectLetter : true
+    );
+
+    const isCorrectLetterForCheckWord = (
+      (solutionReveal === Reveal.CheckWord && isSelectedCell) ? isCorrectLetter : true
+    );
+
+    if (!isCorrectLetterForCheckPuzzle || !isCorrectLetterForCheckWord) {
+      return 'border-red-300';
+    }
+    return 'border-gray-300';
+  };
+
   return (
     <div>
       {grid.map((row, rowIndex) => (
@@ -67,13 +101,13 @@ export default function PuzzleGrid({
         <div key={rowIndex} className="flex">
           {row.map((cell, colIndex) => (
             // eslint-disable-next-line react/no-array-index-key
-            <div key={colIndex} className={`w-8 h-8 border relative border-gray-300 ${cell.isBlack ? 'bg-black' : ''}`}>
+            <div key={colIndex} className={`w-8 h-8 border relative ${getBorder(rowIndex, colIndex)} ${cell.isBlack ? 'bg-black' : ''}`}>
               {cell.isBlack ? '' : (
                 <input
                   className={`w-full h-full text-center caret-transparent pt-2 ${isSelectedClueCell(rowIndex, colIndex) ? 'bg-blue-100' : ''}`}
                   type="text"
                   maxLength={1}
-                  value={solutionValue[rowIndex][colIndex]}
+                  value={getSolutionValue(rowIndex, colIndex)}
                   onChange={(e) => handleInputChange(e, rowIndex, colIndex)}
                   onMouseDown={handleInputOnClick}
                   onFocus={() => onCellSelected(cell)}

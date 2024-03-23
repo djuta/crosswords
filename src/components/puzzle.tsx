@@ -7,6 +7,7 @@ import useSolution from '@/hooks/use-solution';
 import PuzzleGrid from './puzzle-grid';
 import PuzzleClues from './puzzle-clues';
 import PrimaryClue from './primary-clue';
+import RevealButtons from './reveal-buttons';
 
 interface CrosswordPuzzleProps {
   puzzle: Puzzle;
@@ -26,8 +27,11 @@ export default function CrosswordPuzzle({ puzzle }: CrosswordPuzzleProps) {
   const {
     userSolution,
     setUserSolutionCell,
-    shouldShowSolution,
-    toggleShowSolution,
+    solutionReveal,
+    toggleShowPuzzle,
+    toggleShowWord,
+    toggleCheckPuzzle,
+    toggleCheckWord,
   } = useSolution(puzzle.solution);
 
   if (!puzzle.grid) {
@@ -39,9 +43,13 @@ export default function CrosswordPuzzle({ puzzle }: CrosswordPuzzleProps) {
       <div className="flex">
         <h2 className="text-2xl font-bold mb-9 flex-1 mr-9">{puzzle.title}</h2>
         <div className="flex-1">
-          <button type="button" onClick={toggleShowSolution}>
-            {shouldShowSolution ? 'Hide Solution' : 'Show Solution'}
-          </button>
+          <RevealButtons
+            solutionReveal={solutionReveal}
+            toggleShowPuzzle={toggleShowPuzzle}
+            toggleShowWord={toggleShowWord}
+            toggleCheckPuzzle={toggleCheckPuzzle}
+            toggleCheckWord={toggleCheckWord}
+          />
         </div>
       </div>
       <div className="flex min-h-0">
@@ -52,7 +60,7 @@ export default function CrosswordPuzzle({ puzzle }: CrosswordPuzzleProps) {
           <PuzzleGrid
             grid={puzzle.grid}
             solution={puzzle.solution}
-            shouldShowSolution={shouldShowSolution}
+            solutionReveal={solutionReveal}
             userSolution={userSolution}
             onInputChange={setUserSolutionCell}
             selectedCells={selectedCells}
