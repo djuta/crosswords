@@ -88,10 +88,9 @@ export default function PuzzleGrid({
       (solutionReveal === Reveal.CheckWord && isSelectedCell) ? isCorrectLetter : true
     );
 
-    if (!isCorrectLetterForCheckPuzzle || !isCorrectLetterForCheckWord) {
-      return 'border-red-300';
-    }
-    return 'border-gray-300';
+    const isValid = isCorrectLetterForCheckPuzzle && isCorrectLetterForCheckWord;
+
+    return isValid ? 'border-gray-300' : 'border-red-300';
   };
 
   return (

@@ -17,16 +17,28 @@ export default function RevealButtons({
 }: RevealButtonsProps) {
   const buttons = [
     {
-      type: Reveal.PuzzleSolution, toggle: toggleShowPuzzle, showText: 'Show Puzzle', hideText: 'Hide Puzzle',
+      type: Reveal.PuzzleSolution,
+      toggle: toggleShowPuzzle,
+      showText: 'Show Puzzle',
+      hideText: 'Hide Puzzle',
     },
     {
-      type: Reveal.WordSolution, toggle: toggleShowWord, showText: 'Show Word', hideText: 'Hide Word',
+      type: Reveal.WordSolution,
+      toggle: toggleShowWord,
+      showText: 'Show Word',
+      hideText: 'Hide Word',
     },
     {
-      type: Reveal.CheckPuzzle, toggle: toggleCheckPuzzle, showText: 'Check Puzzle', hideText: 'Uncheck Puzle',
+      type: Reveal.CheckPuzzle,
+      toggle: toggleCheckPuzzle,
+      showText: 'Check Puzzle',
+      hideText: 'Uncheck Puzle',
     },
     {
-      type: Reveal.CheckWord, toggle: toggleCheckWord, showText: 'Check Word', hideText: 'Uncheck Word',
+      type: Reveal.CheckWord,
+      toggle: toggleCheckWord,
+      showText: 'Check Word',
+      hideText: 'Uncheck Word',
     },
   ];
 
