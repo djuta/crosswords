@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import Puzzle from '@/types/puzzle';
 import useClues from '@/hooks/use-clues';
 import useSolution from '@/hooks/use-solution';
@@ -10,10 +10,15 @@ import PrimaryClue from './primary-clue';
 import RevealButtons from './reveal-buttons';
 
 interface CrosswordPuzzleProps {
-  puzzle: Puzzle;
+  puzzle: Puzzle
+  // eslint-disable-next-line no-unused-vars
+  setSolution: (solutiomn: Puzzle['solution']) => void
+  initialUserSolution: Puzzle['solution'] | undefined;
 }
 
-export default function CrosswordPuzzle({ puzzle }: CrosswordPuzzleProps) {
+export default function CrosswordPuzzle({
+  puzzle, setSolution, initialUserSolution,
+}: CrosswordPuzzleProps) {
   const {
     clues,
     setCurrentCell,
@@ -32,7 +37,13 @@ export default function CrosswordPuzzle({ puzzle }: CrosswordPuzzleProps) {
     toggleShowWord,
     toggleCheckPuzzle,
     toggleCheckWord,
-  } = useSolution(puzzle.solution);
+  } = useSolution({ solution: puzzle.solution, initialUserSolution });
+
+  useEffect(() => {
+    if (setSolution) {
+      setSolution(userSolution);
+    }
+  }, [setSolution, userSolution]);
 
   if (!puzzle.grid) {
     return null;

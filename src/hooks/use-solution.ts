@@ -2,10 +2,15 @@ import Puzzle from '@/types/puzzle';
 import { Reveal } from '@/types/reveal';
 import { useState } from 'react';
 
-export default function useSolution(solution: Puzzle['solution']) {
+interface UserSolutionParams {
+  solution: Puzzle['solution']
+  initialUserSolution: Puzzle['solution'] | undefined
+}
+
+export default function useSolution({ solution, initialUserSolution }: UserSolutionParams) {
   const [solutionReveal, setSolutionReveal] = useState(Reveal.None);
   const [userSolution, setUserSolution] = useState(
-    solution.map((row) => row.map(() => '')),
+    initialUserSolution ?? solution.map((row) => row.map(() => '')),
   );
 
   const buildSolutionRevealToggle = (reveal: Reveal) => () => {

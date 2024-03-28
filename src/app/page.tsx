@@ -1,17 +1,9 @@
-import { getUser } from '@/services/user';
-import { redirect } from 'next/navigation';
+import AdhocPuzzle from '@/components/adhoc-puzzle';
 
-export default async function Index() {
-  const user = await getUser();
-
-  if (user) {
-    redirect('/crosswords');
-  }
-
+export default function Crossword() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24 bg-slate-50">
-      <h1>Auth</h1>
-      <a href="/api/auth/login">Login or Signup</a>
+    <main className="flex max-w-screen max-h-screen h-screen flex-col items-center justify-center p-10">
+      <AdhocPuzzle />
     </main>
   );
 }

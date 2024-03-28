@@ -3,9 +3,10 @@ import parsePuz from 'puz-parser';
 import PuzzleSummary from '@/types/puzzle-summary';
 import Puzzle from '@/types/puzzle';
 
-export const uploadPuzzle = async (userId: string, puz: Uint8Array): Promise<PuzzleSummary> => {
+const createPuzzleFromFile = async (file: File) => {
+  const puzFile = await file.arrayBuffer();
+  const puz = new Uint8Array(puzFile);
   const decodedPuzzle = parsePuz(puz);
-
   let solutionIndex = 0;
   const solution: string[][] = [];
 
@@ -25,10 +26,13 @@ export const uploadPuzzle = async (userId: string, puz: Uint8Array): Promise<Puz
     });
   });
 
-  const newPuzzle = {
+  return {
     ...decodedPuzzle, solution, status: 0, grid,
   };
+};
 
+export const uploadPuzzle = async (userId: string, puz: File): Promise<PuzzleSummary> => {
+  const newPuzzle = await createPuzzleFromFile(puz);
   const puzzleId = await puzzlesRepository.insertPuzzle(userId, newPuzzle);
   return puzzlesRepository.getPuzzleSummary(userId, puzzleId);
 };
@@ -40,3 +44,8 @@ export const getPuzzles = async (userId: string): Promise<PuzzleSummary[]> => (
 export const getPuzzle = async (userId: string, puzzleId: string): Promise<Puzzle> => (
   puzzlesRepository.getPuzzle(userId, puzzleId)
 );
+
+export const getAdhocPuzzle = async (puz: File): Promise<Puzzle> => {
+  const newPuzzle = await createPuzzleFromFile(puz);
+  return { puzzleId: '0', ...newPuzzle };
+};

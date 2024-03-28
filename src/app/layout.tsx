@@ -16,11 +16,13 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const shouldUseAuth = process.env.USE_AUTH === 'true';
+  const Root = shouldUseAuth ? UserProvider : React.Fragment;
   return (
-    <UserProvider>
+    <Root>
       <html lang="en">
         <body className={inter.className}>{children}</body>
       </html>
-    </UserProvider>
+    </Root>
   );
 }

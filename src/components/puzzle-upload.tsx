@@ -1,11 +1,14 @@
 'use client';
 
 import React from 'react';
-import useUploadPuzzle from '@/hooks/use-upload-puzzle';
 
-export default function PuzzleUpload() {
-  const uploadPuzzle = useUploadPuzzle();
+interface PuzzleUploadProps {
+  // eslint-disable-next-line no-unused-vars
+  uploadPuzzle: (file: File) => void
+}
 
+// eslint-disable-next-line no-unused-vars
+export default function PuzzleUpload({ uploadPuzzle }: PuzzleUploadProps) {
   const handleOnSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const [file] = e.currentTarget.fileUpload.files;
