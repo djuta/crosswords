@@ -3,6 +3,10 @@ export const setLocalStorageObj = (key: string, obj: Object) => {
   localStorage.setItem(key, value);
 };
 
+export const removeLocalStorageObj = (key: string) => {
+  localStorage.removeItem(key);
+};
+
 export const getLocalStorageObj = (key: string) => {
   const item = localStorage.getItem(key);
   try {

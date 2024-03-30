@@ -1,6 +1,4 @@
-import * as puzzlesRepository from '@/repositories/puzzles';
 import parsePuz from 'puz-parser';
-import PuzzleSummary from '@/types/puzzle-summary';
 import Puzzle from '@/types/puzzle';
 
 const createPuzzleFromFile = async (file: File) => {
@@ -31,21 +29,11 @@ const createPuzzleFromFile = async (file: File) => {
   };
 };
 
-export const uploadPuzzle = async (userId: string, puz: File): Promise<PuzzleSummary> => {
-  const newPuzzle = await createPuzzleFromFile(puz);
-  const puzzleId = await puzzlesRepository.insertPuzzle(userId, newPuzzle);
-  return puzzlesRepository.getPuzzleSummary(userId, puzzleId);
-};
-
-export const getPuzzles = async (userId: string): Promise<PuzzleSummary[]> => (
-  puzzlesRepository.getPuzzles(userId)
-);
-
-export const getPuzzle = async (userId: string, puzzleId: string): Promise<Puzzle> => (
-  puzzlesRepository.getPuzzle(userId, puzzleId)
-);
-
-export const getAdhocPuzzle = async (puz: File): Promise<Puzzle> => {
-  const newPuzzle = await createPuzzleFromFile(puz);
-  return { puzzleId: '0', ...newPuzzle };
+export const getPuzzle = async (puz: File): Promise<Puzzle> => {
+  try {
+    const newPuzzle = await createPuzzleFromFile(puz);
+    return { puzzleId: '0', ...newPuzzle };
+  } catch {
+    throw new Error('Error parsing puz file');
+  }
 };

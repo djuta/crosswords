@@ -23,7 +23,7 @@ export default function PuzzleClues({ clues, selected, onClueSelected }: PuzzleC
   return (
     <ol className="overflow-scroll bg-white py-3">
       {clues.map(([clueNumber, clueText]) => (
-        <li key={clueNumber} ref={((el) => { clueRefs.current[clueNumber] = el; })} className={`${clueNumber === selected?.clueIndex ? 'bg-blue-100' : 'bg-white'}`}>
+        <li key={clueNumber} ref={((el) => { clueRefs.current[clueNumber] = el; })} className={`${clueNumber === selected?.clueIndex ? 'bg-green-100' : 'bg-white'}`}>
           <button type="button" className="flex text-left text-sm py-1 px-3" onClick={() => onClueSelected(clueNumber)}>
             <div className="mr-3 font-bold w-5">
               {clueNumber}

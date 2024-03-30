@@ -85,7 +85,7 @@ export default function PuzzleGrid({
     }
   };
 
-  const getBorder = (rowIndex: number, colIndex: number) => {
+  const getBackground = (rowIndex: number, colIndex: number) => {
     const isSelectedCell = isSelectedClueCell(rowIndex, colIndex);
     const userSolutionLetter = userSolution[rowIndex][colIndex];
     const solutionLetter = solution[rowIndex][colIndex];
@@ -101,7 +101,15 @@ export default function PuzzleGrid({
 
     const isValid = isCorrectLetterForCheckPuzzle && isCorrectLetterForCheckWord;
 
-    return isValid ? 'border-gray-300' : 'border-red-300';
+    if (!isValid) {
+      return 'bg-red-100';
+    }
+
+    if (isSelectedCell) {
+      return 'bg-green-100';
+    }
+
+    return '';
   };
 
   return (
@@ -111,10 +119,10 @@ export default function PuzzleGrid({
         <div key={rowIndex} className="flex">
           {row.map((cell, colIndex) => (
             // eslint-disable-next-line react/no-array-index-key
-            <div key={colIndex} className={`w-8 h-8 border relative ${getBorder(rowIndex, colIndex)} ${cell.isBlack ? 'bg-black' : ''}`}>
+            <div key={colIndex} className={`w-8 h-8 border relative border-gray-300' ${cell.isBlack ? 'bg-black' : ''}`}>
               {cell.isBlack ? '' : (
                 <input
-                  className={`w-full h-full text-center caret-transparent pt-2 ${isSelectedClueCell(rowIndex, colIndex) ? 'bg-blue-100' : ''}`}
+                  className={`w-full h-full text-center caret-transparent pt-2 ${isSelectedClueCell(rowIndex, colIndex) ? 'bg-green-100' : ''} ${getBackground(rowIndex, colIndex)}`}
                   type="text"
                   ref={(el) => tabIndexElements.set(getTabIndex(rowIndex, colIndex), el)}
                   value={getSolutionValue(rowIndex, colIndex)}

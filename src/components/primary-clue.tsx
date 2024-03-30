@@ -10,7 +10,7 @@ export default function PrimaryClue({ currentCell, isAcross }: PrimaryClueProps)
   const directionSuffix = isAcross ? 'A' : 'D';
   const { clue, clueIndex } = currentCell?.[direction] ?? {};
   return (
-    <div className="h-16 px-6 bg-blue-100 flex items-center ">
+    <div className="h-16 px-6 bg-green-100 flex items-center ">
       <div className="mr-3 font-bold">
         {clueIndex}
         {clueIndex && directionSuffix}

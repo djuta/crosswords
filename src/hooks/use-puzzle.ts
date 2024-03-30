@@ -1,5 +1,5 @@
 import Puzzle from '@/types/puzzle';
-import { getLocalStorageObj, setLocalStorageObj } from '@/utils/local-storage';
+import { getLocalStorageObj, removeLocalStorageObj, setLocalStorageObj } from '@/utils/local-storage';
 import { useEffect, useState } from 'react';
 
 const SOLUTION_KEY = 'solution';
@@ -8,7 +8,7 @@ const PUZZLE_KEY = 'puzzle';
 const uploadPuzzleFile = async (file: File): Promise<Puzzle> => {
   const formData = new FormData();
   formData.append('file', file);
-  const res = await fetch('/api/adhoc-puzzle', {
+  const res = await fetch('/api/puzzle', {
     method: 'POST',
     body: formData,
   });
@@ -50,11 +50,19 @@ export default function useAdhocPuzzle() {
     setPuzzle(puzObj);
   };
 
+  const clearPuzzle = () => {
+    removeLocalStorageObj(SOLUTION_KEY);
+    removeLocalStorageObj(PUZZLE_KEY);
+    setPuzzle(undefined);
+    setSolution(undefined);
+  };
+
   return {
     uploadPuzzle,
     puzzle,
     setSolution,
     solution,
     isLoading,
+    clearPuzzle,
   };
 }
